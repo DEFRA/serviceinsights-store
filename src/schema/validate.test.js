@@ -52,12 +52,6 @@ describe('#validateServiceRecord', () => {
     expect(valid).toBe(false)
   })
 
-  test('requires startPageUrl in public_beta or live', () => {
-    const record = validRecord({ lifecyclePhase: 'public_beta' })
-    delete record.startPageUrl
-    expect(validateServiceRecord(record).valid).toBe(false)
-  })
-
   test('requires primaryUserGroupOther when primaryUserGroup is other', () => {
     const { valid } = validateServiceRecord(
       validRecord({ primaryUserGroup: 'other' })
@@ -65,8 +59,21 @@ describe('#validateServiceRecord', () => {
     expect(valid).toBe(false)
   })
 
-  test('allows an early-phase record without a start page', () => {
-    const record = validRecord({ lifecyclePhase: 'discovery' })
+  test('accepts the minimal alpha record (ownership fields optional)', () => {
+    // The source directory export has no owner/contact/user-group data; those
+    // are collected by the management tool later, so a record without them is
+    // valid during the alpha.
+    const record = {
+      id: '22222222-2222-4222-8222-222222222222',
+      name: 'A minimal service',
+      sensitivity: 'official',
+      audit: { createdAt: now, updatedAt: now, updatedBy: 'import' }
+    }
+    expect(validateServiceRecord(record).valid).toBe(true)
+  })
+
+  test('allows a live record without a start page', () => {
+    const record = validRecord({ lifecyclePhase: 'live' })
     delete record.startPageUrl
     expect(validateServiceRecord(record).valid).toBe(true)
   })

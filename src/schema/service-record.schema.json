@@ -1,0 +1,266 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://schemas.serviceinsights.defra.gov.uk/service-record/v1.json",
+  "title": "Service record",
+  "description": "Canonical schema for a Service Insights service record (alpha). Derived from the service-record data dictionary. Human fields are entered by the service owner or their team; system fields are set by the store and are read-only. Records may not contain fields outside this schema (additionalProperties: false).",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "id",
+    "name",
+    "description",
+    "owningOrganisation",
+    "owner",
+    "ownerEmail",
+    "serviceContact",
+    "lifecyclePhase",
+    "primaryUserGroup",
+    "sensitivity",
+    "audit"
+  ],
+  "properties": {
+    "id": {
+      "description": "Unique identifier for the record. Set on creation, read-only.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "name": {
+      "description": "Public-facing or working name of the service.",
+      "type": "string",
+      "minLength": 3,
+      "maxLength": 120
+    },
+    "description": {
+      "description": "One or two sentences on what the service lets a user do.",
+      "type": "string",
+      "minLength": 20,
+      "maxLength": 300
+    },
+    "type": {
+      "description": "Service type / channel. Under review — controlled values to be confirmed with the alpha team.",
+      "type": "string",
+      "maxLength": 120
+    },
+    "digitalServiceType": {
+      "description": "The type of digital service, for digital services.",
+      "type": "string",
+      "enum": [
+        "transactional",
+        "information",
+        "user_centred_information_service"
+      ]
+    },
+    "owningOrganisation": {
+      "description": "Owning organisation within the Defra group.",
+      "type": "string",
+      "enum": [
+        "defra",
+        "environment_agency",
+        "natural_england",
+        "rural_payments_agency",
+        "animal_and_plant_health_agency",
+        "forestry_commission",
+        "marine_management_organisation",
+        "centre_for_environment_fisheries_and_aquaculture_science",
+        "veterinary_medicines_directorate",
+        "other"
+      ]
+    },
+    "owner": {
+      "description": "Named individual accountable for the service.",
+      "type": "string",
+      "maxLength": 120
+    },
+    "ownerEmail": {
+      "description": "Contact route for the named owner.",
+      "type": "string",
+      "format": "email"
+    },
+    "serviceContact": {
+      "description": "The service or delivery team's key contact. A single contact for alpha; multiple may be supported in beta.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "email", "type"],
+      "properties": {
+        "name": {
+          "description": "Service or delivery team key contact.",
+          "type": "string",
+          "minLength": 2,
+          "maxLength": 120
+        },
+        "email": {
+          "description": "Key contact email address.",
+          "type": "string",
+          "format": "email"
+        },
+        "type": {
+          "description": "The role held by the key contact, e.g. Delivery Manager.",
+          "type": "string",
+          "maxLength": 120
+        }
+      }
+    },
+    "lifecyclePhase": {
+      "description": "Service lifecycle phase.",
+      "type": "string",
+      "enum": [
+        "discovery",
+        "alpha",
+        "private_beta",
+        "public_beta",
+        "live",
+        "retired"
+      ]
+    },
+    "lifecyclePhaseStartDate": {
+      "description": "The date the current lifecycle phase started.",
+      "type": "string",
+      "format": "date"
+    },
+    "lifecyclePhaseEndDate": {
+      "description": "The date the current lifecycle phase is expected to end. Must be on or after lifecyclePhaseStartDate (enforced by the store).",
+      "type": "string",
+      "format": "date"
+    },
+    "primaryUserGroup": {
+      "description": "Single primary user group.",
+      "type": "string",
+      "enum": [
+        "citizens",
+        "businesses",
+        "internal_staff",
+        "other_government",
+        "other"
+      ]
+    },
+    "primaryUserGroupOther": {
+      "description": "Free-text user group when primaryUserGroup is 'other'.",
+      "type": "string",
+      "maxLength": 120
+    },
+    "sensitivity": {
+      "description": "Government Security Classification of this directory record. Governs what the renderer shows to unauthenticated viewers.",
+      "type": "string",
+      "enum": ["official", "official_sensitive", "secret"],
+      "default": "official"
+    },
+    "startPageUrl": {
+      "description": "Start or home page of the service. Required when lifecyclePhase is public_beta or live.",
+      "type": "string",
+      "format": "uri",
+      "pattern": "^https://"
+    },
+    "dataSensitivity": {
+      "description": "Highest classification of data the service handles. Distinct from the record's own sensitivity.",
+      "type": "string",
+      "enum": ["official", "official_sensitive", "secret"]
+    },
+    "directorate": {
+      "description": "Directorate the service belongs to.",
+      "type": "string",
+      "maxLength": 120
+    },
+    "programme": {
+      "description": "Programme the service belongs to.",
+      "type": "string",
+      "maxLength": 120
+    },
+    "deliveryGroup": {
+      "description": "Delivery group the service belongs to.",
+      "type": "string",
+      "enum": [
+        "waste_and_circular_economy",
+        "nature_recovery",
+        "animal_and_plant_health",
+        "environmental_quality",
+        "farming",
+        "trade_and_eu_reset",
+        "livestock",
+        "planning",
+        "water",
+        "floods_incidents_and_asset_management"
+      ]
+    },
+    "platform": {
+      "description": "Hosting or delivery platform, for the estate view.",
+      "type": "string",
+      "enum": ["cdp", "legacy", "third_party", "other"]
+    },
+    "platformOther": {
+      "description": "Free-text platform when platform is 'other'.",
+      "type": "string",
+      "maxLength": 120
+    },
+    "webRegisterId": {
+      "description": "Unique web register ID for the service. Background field.",
+      "type": "string",
+      "format": "uuid"
+    },
+    "projectOnlineCode": {
+      "description": "Unique Project Online code for the service. Background field.",
+      "type": "string",
+      "maxLength": 50
+    },
+    "sopCode": {
+      "description": "Unique SOP code for the service. Background field.",
+      "type": "string",
+      "maxLength": 50
+    },
+    "serviceNowId": {
+      "description": "Unique ServiceNow ID for the service. Background field.",
+      "type": "string",
+      "maxLength": 50
+    },
+    "relatedServices": {
+      "description": "Identifiers of related or predecessor services. Populated by the directory after registration.",
+      "type": "array",
+      "items": { "type": "string", "format": "uuid" },
+      "uniqueItems": true
+    },
+    "audit": {
+      "description": "System-maintained audit metadata. Read-only.",
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["createdAt", "updatedAt", "updatedBy"],
+      "properties": {
+        "createdAt": {
+          "description": "When the record was created.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedAt": {
+          "description": "When the record was last updated.",
+          "type": "string",
+          "format": "date-time"
+        },
+        "updatedBy": {
+          "description": "Identity of the last editor, as an email address or system principal.",
+          "type": "string"
+        }
+      }
+    }
+  },
+  "allOf": [
+    {
+      "if": {
+        "properties": { "primaryUserGroup": { "const": "other" } },
+        "required": ["primaryUserGroup"]
+      },
+      "then": { "required": ["primaryUserGroupOther"] }
+    },
+    {
+      "if": {
+        "properties": { "platform": { "const": "other" } },
+        "required": ["platform"]
+      },
+      "then": { "required": ["platformOther"] }
+    },
+    {
+      "if": {
+        "properties": { "lifecyclePhase": { "enum": ["public_beta", "live"] } },
+        "required": ["lifecyclePhase"]
+      },
+      "then": { "required": ["startPageUrl"] }
+    }
+  ]
+}

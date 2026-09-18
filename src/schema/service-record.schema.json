@@ -2,22 +2,10 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "$id": "https://schemas.serviceinsights.defra.gov.uk/service-record/v1.json",
   "title": "Service record",
-  "description": "Canonical schema for a Service Insights service record (alpha). Derived from the service-record data dictionary. Human fields are entered by the service owner or their team; system fields are set by the store and are read-only. Records may not contain fields outside this schema (additionalProperties: false).",
+  "description": "Canonical schema for a Service Insights service record (alpha). Derived from the service-record data dictionary. Human fields are entered by the service owner or their team; system fields are set by the store and are read-only. Records may not contain fields outside this schema (additionalProperties: false). For the alpha, `required` is deliberately minimal: the ownership and contact fields (owner, ownerEmail, serviceContact, primaryUserGroup) are not held in the source directory export and are collected by the management tool over time, so they are optional here. They remain fully defined so the CMS knows the complete shape of a record.",
   "type": "object",
   "additionalProperties": false,
-  "required": [
-    "id",
-    "name",
-    "description",
-    "owningOrganisation",
-    "owner",
-    "ownerEmail",
-    "serviceContact",
-    "lifecyclePhase",
-    "primaryUserGroup",
-    "sensitivity",
-    "audit"
-  ],
+  "required": ["id", "name", "sensitivity", "audit"],
   "properties": {
     "id": {
       "description": "Unique identifier for the record. Set on creation, read-only.",
@@ -145,7 +133,7 @@
       "default": "official"
     },
     "startPageUrl": {
-      "description": "Start or home page of the service. Required when lifecyclePhase is public_beta or live.",
+      "description": "Start or home page of the service. Expected once a service reaches public_beta or live; not enforced during the alpha import.",
       "type": "string",
       "format": "uri",
       "pattern": "^https://"
@@ -254,13 +242,6 @@
         "required": ["platform"]
       },
       "then": { "required": ["platformOther"] }
-    },
-    {
-      "if": {
-        "properties": { "lifecyclePhase": { "enum": ["public_beta", "live"] } },
-        "required": ["lifecyclePhase"]
-      },
-      "then": { "required": ["startPageUrl"] }
     }
   ]
 }

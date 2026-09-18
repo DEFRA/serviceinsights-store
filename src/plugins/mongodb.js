@@ -1,6 +1,8 @@
 import { MongoClient } from 'mongodb'
 import { LockManager } from 'mongo-locks'
 
+import { setupServiceRecords } from '#/services/service-record/setup.js'
+
 export const mongoDb = {
   plugin: {
     name: 'mongodb',
@@ -17,6 +19,7 @@ export const mongoDb = {
       const locker = new LockManager(db.collection('mongo-locks'))
 
       await createIndexes(db)
+      await setupServiceRecords(db, server.logger)
 
       server.logger.info(`MongoDb connected to ${databaseName}`)
 
